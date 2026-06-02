@@ -3,7 +3,7 @@ import videoSrc from "../../assets/video/video-sample.mp4";
 import { noiseUrl } from "../../data";
 import Counter from "../../components/Counter";
 
-export default function HeroSection({ setAiOpen }) {
+export default function HeroSection() {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -83,7 +83,8 @@ export default function HeroSection({ setAiOpen }) {
           style={{ background: "#C8F53B", color: "#000", border: "none", borderRadius: 8, padding: "14px 28px", fontFamily: "'Space Mono', monospace", fontSize: 11, letterSpacing: 2, cursor: "pointer", fontWeight: 700, transition: "transform 0.2s", boxShadow: "0 8px 32px #C8F53B33" }}>
           VIEW OUR WORK →
         </button>
-        <button data-hover onClick={() => setAiOpen(true)}
+        <button data-hover
+          onClick={() => document.getElementById("contact").scrollIntoView({ behavior: "smooth" })}
           onMouseEnter={e => { e.currentTarget.style.borderColor = "#C8F53B"; e.currentTarget.style.color = "#C8F53B"; }}
           onMouseLeave={e => { e.currentTarget.style.borderColor = "#333"; e.currentTarget.style.color = "#fff"; }}
           style={{ background: "transparent", color: "#fff", border: "1px solid #333", borderRadius: 8, padding: "14px 28px", fontFamily: "'Space Mono', monospace", fontSize: 11, letterSpacing: 2, cursor: "pointer", transition: "border-color 0.2s, color 0.2s" }}>

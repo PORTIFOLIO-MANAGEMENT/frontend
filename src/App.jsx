@@ -19,7 +19,7 @@ export default function App() {
       <style>{globalCss}</style>
       <CursorDot />
       <Navbar setAiOpen={setAiOpen} />
-      <HeroSection setAiOpen={setAiOpen} />
+      <HeroSection />
       <MarqueeBar />
       <WorkSection />
       <ServicesSection />
