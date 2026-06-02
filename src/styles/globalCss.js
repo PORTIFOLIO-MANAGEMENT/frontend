@@ -23,6 +23,8 @@ export const globalCss = `
   .nav-links { display:flex; gap:40px; }
   .nav-actions { display:flex; align-items:center; gap:12px; }
   .hamburger { display:none; background:none; border:1px solid #2a2a2a; border-radius:8px; width:40px; height:40px; cursor:pointer; flex-direction:column; align-items:center; justify-content:center; gap:5px; padding:0; }
+  .desktop-only { display:flex; }
+  .mobile-menu-btn { display:none; }
   .hamburger span { display:block; width:18px; height:1.5px; background:#888; transition:all 0.3s; border-radius:2px; }
   /* ── Sidebar drawer ── */
   .sidebar-overlay { position:fixed; inset:0; z-index:98; background:transparent; pointer-events:none; transition:background 0.4s ease; }
@@ -71,7 +73,9 @@ export const globalCss = `
   @media (max-width:768px) {
     .rsp-nav { padding:16px 20px; }
     .nav-links { display:none !important; }
-    .hamburger { display:flex !important; }
+    .hamburger { display:none !important; }
+    .desktop-only { display:none !important; }
+    .mobile-menu-btn { display:flex !important; }
     .section-pad { padding:60px 20px; }
     .hero-deco { display:none !important; }
     .hero-bottom { display:none !important; }

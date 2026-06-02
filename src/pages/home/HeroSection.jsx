@@ -3,7 +3,7 @@ import videoSrc from "../../assets/video/video-sample.mp4";
 import { noiseUrl } from "../../data";
 import Counter from "../../components/Counter";
 
-export default function HeroSection() {
+export default function HeroSection({ setAiOpen }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -80,6 +80,23 @@ export default function HeroSection() {
         <p style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 4, color: "#555", margin: "10px 0 0" }}>
           INTERACTIVE EXPERIENCES · 3D · WEB
         </p>
+      </div>
+
+      {/* CTA buttons — bottom of hero section */}
+      <div style={{ position: "absolute", bottom: 40, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "center", zIndex: 3, animation: "fadeSlide 1s 0.4s both", whiteSpace: "nowrap" }}>
+        <button data-hover
+          onClick={() => document.getElementById("work").scrollIntoView({ behavior: "smooth" })}
+          onMouseEnter={e => e.currentTarget.style.transform = "scale(1.04)"}
+          onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
+          style={{ background: "#C8F53B", color: "#000", border: "none", borderRadius: 8, padding: "14px 28px", fontFamily: "'Space Mono', monospace", fontSize: 11, letterSpacing: 2, cursor: "pointer", fontWeight: 700, transition: "transform 0.2s", boxShadow: "0 8px 32px #C8F53B33" }}>
+          VIEW OUR WORK →
+        </button>
+        <button data-hover onClick={() => setAiOpen(true)}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = "#C8F53B"; e.currentTarget.style.color = "#C8F53B"; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = "#333"; e.currentTarget.style.color = "#fff"; }}
+          style={{ background: "transparent", color: "#fff", border: "1px solid #333", borderRadius: 8, padding: "14px 28px", fontFamily: "'Space Mono', monospace", fontSize: 11, letterSpacing: 2, cursor: "pointer", transition: "border-color 0.2s, color 0.2s" }}>
+          START A PROJECT
+        </button>
       </div>
 
       {/* Scroll indicator */}
