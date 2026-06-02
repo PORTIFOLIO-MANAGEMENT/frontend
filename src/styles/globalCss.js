@@ -78,8 +78,8 @@ export const globalCss = `
     .hero-deco { display:none !important; }
     .hero-bottom { display:none !important; }
     .hero-mobile-text { display:block; }
-    .hero-cta-row { position:relative; bottom:auto; left:auto; transform:none; flex-direction:row; align-items:center; width:calc(100% - 48px); max-width:320px; margin-top:16px; gap:10px; }
-    .hero-cta-row button { flex:1; box-sizing:border-box; text-align:center; justify-content:center; }
+    .hero-cta-row { position:relative; bottom:auto; left:auto; transform:none; flex-direction:row; align-items:center; width:calc(100% - 48px); max-width:320px; margin-top:16px; gap:8px; }
+    .hero-cta-row button { flex:1; box-sizing:border-box; text-align:center; justify-content:center; padding: 12px 16px !important; }
     .work-grid { grid-template-columns:1fr; }
     .site-footer { flex-direction:column; align-items:flex-start; padding:36px 20px; }
   }

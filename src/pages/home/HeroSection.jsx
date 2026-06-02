@@ -75,7 +75,7 @@ export default function HeroSection({ setAiOpen }) {
       {/* Mobile-only hero identity */}
 
       {/* CTA buttons — bottom of hero section */}
-      <div style={{ position: "absolute", bottom: 40, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "center", zIndex: 3, animation: "fadeSlide 1s 0.4s both", whiteSpace: "nowrap" }}>
+      <div className="hero-cta-row" style={{ position: "absolute", bottom: 40, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "center", zIndex: 3, animation: "fadeSlide 1s 0.4s both" }}>
         <button data-hover
           onClick={() => document.getElementById("work").scrollIntoView({ behavior: "smooth" })}
           onMouseEnter={e => e.currentTarget.style.transform = "scale(1.04)"}
