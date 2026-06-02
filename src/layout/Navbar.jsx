@@ -24,7 +24,7 @@ export default function Navbar({ setAiOpen }) {
         transition: "all 0.4s ease",
       }}>
         <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 24, letterSpacing: 4, color: "#fff", flexShrink: 0 }}>
-          FORGE<span style={{ color: "#C8F53B" }}>.</span>STUDIO
+          C2<span style={{ color: "#C8F53B" }}>.</span>Y
         </div>
 
         <div className="nav-links" style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, letterSpacing: 2 }}>
@@ -57,17 +57,6 @@ export default function Navbar({ setAiOpen }) {
             style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, letterSpacing: 2, color: "#000", textDecoration: "none", padding: "10px 18px", background: "#C8F53B", borderRadius: 8, fontWeight: 700, transition: "background 0.2s" }}>
             REGISTER
           </a>
-          <button data-hover onClick={() => setAiOpen(true)}
-            onMouseEnter={e => { e.currentTarget.style.background = "#C8F53B11"; e.currentTarget.style.borderColor = "#C8F53B"; }}
-            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "#C8F53B44"; }}
-            style={{ background: "transparent", color: "#C8F53B", border: "1px solid #C8F53B44", borderRadius: 8, padding: "10px 18px", fontFamily: "'Space Mono', monospace", fontSize: 11, letterSpacing: 2, cursor: "pointer", fontWeight: 700, display: "flex", alignItems: "center", gap: 8, transition: "border-color 0.2s, background 0.2s" }} className="desktop-only">
-            <span style={{ animation: "pulse 2s infinite", display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "#C8F53B" }} />
-            ASK ARIA
-          </button>
-          <button data-hover onClick={() => setMobileMenuOpen(true)}
-            style={{ background: "#C8F53B", color: "#000", border: "none", borderRadius: 8, padding: "10px 18px", fontFamily: "'Space Mono', monospace", fontSize: 11, letterSpacing: 2, cursor: "pointer", fontWeight: 700, display: "none", alignItems: "center", gap: 8, transition: "background 0.2s" }} className="mobile-menu-btn">
-            MENU
-          </button>
           <button className="hamburger" onClick={() => setMobileMenuOpen(m => !m)} aria-label="Toggle menu">
             <span style={{ transform: mobileMenuOpen ? "rotate(45deg) translate(4px, 4px)" : "none" }} />
             <span style={{ opacity: mobileMenuOpen ? 0 : 1 }} />

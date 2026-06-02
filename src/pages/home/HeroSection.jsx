@@ -73,14 +73,6 @@ export default function HeroSection({ setAiOpen }) {
       </div>
 
       {/* Mobile-only hero identity */}
-      <div className="hero-mobile-text">
-        <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(52px,15vw,88px)", letterSpacing: 2, color: "#fff", lineHeight: 1, margin: "0 0 8px" }}>
-          FORGE<span style={{ color: "#C8F53B" }}>.</span>STUDIO
-        </h2>
-        <p style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 4, color: "#555", margin: "10px 0 0" }}>
-          INTERACTIVE EXPERIENCES · 3D · WEB
-        </p>
-      </div>
 
       {/* CTA buttons — bottom of hero section */}
       <div style={{ position: "absolute", bottom: 40, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "center", zIndex: 3, animation: "fadeSlide 1s 0.4s both", whiteSpace: "nowrap" }}>
