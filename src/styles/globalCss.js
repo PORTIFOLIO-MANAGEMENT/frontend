@@ -25,6 +25,9 @@ export const globalCss = `
   .hamburger { display:none; background:none; border:1px solid #2a2a2a; border-radius:8px; width:40px; height:40px; cursor:pointer; flex-direction:column; align-items:center; justify-content:center; gap:5px; padding:0; }
   .desktop-only { display:flex; }
   .hamburger span { display:block; width:18px; height:1.5px; background:#888; transition:all 0.3s; border-radius:2px; }
+  /* ── AI Widget ── */
+  .ai-widget { transition: all 0.3s ease; }
+  .ai-widget-header { transition: all 0.3s ease; }
   /* ── Sidebar drawer ── */
   .sidebar-overlay { position:fixed; inset:0; z-index:98; background:transparent; pointer-events:none; transition:background 0.4s ease; }
   .sidebar-overlay.open { background:rgba(0,0,0,0.72); backdrop-filter:blur(6px); pointer-events:all; }
@@ -82,6 +85,8 @@ export const globalCss = `
     .hero-cta-row button { flex:1; box-sizing:border-box; text-align:center; justify-content:center; padding: 12px 14px !important; }
     .work-grid { grid-template-columns:1fr; }
     .site-footer { flex-direction:column; align-items:flex-start; padding:36px 20px; }
+    .ai-widget { width:calc(100vw - 32px) !important; max-height:calc(100dvh - 120px) !important; bottom:16 !important; right:16 !important; left:16 !important; }
+    .ai-widget-header { padding:14px 16px !important; }
   }
   /* ── 480px ── */
   @media (max-width:480px) {

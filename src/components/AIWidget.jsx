@@ -51,7 +51,7 @@ If asked for a project brief, ask: 1) What's the project? 2) What's the timeline
   }, [input, loading, messages]);
 
   return (
-    <div style={{
+    <div className="ai-widget" style={{
       position: "fixed", bottom: 100, right: 16, width: "min(360px, calc(100vw - 32px))", maxHeight: "min(520px, calc(100dvh - 120px))",
       background: "#0D0D0D", border: "1px solid #222", borderRadius: 16,
       display: "flex", flexDirection: "column", zIndex: 1000,
@@ -59,7 +59,7 @@ If asked for a project brief, ask: 1) What's the project? 2) What's the timeline
       overflow: "hidden", animation: "slideUp 0.3s cubic-bezier(0.16,1,0.3,1)",
     }}>
       {/* Header with tabs */}
-      <div style={{ padding: "16px 20px", borderBottom: "1px solid #1a1a1a", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <div className="ai-widget-header" style={{ padding: "16px 20px", borderBottom: "1px solid #1a1a1a", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div style={{ display: "flex", gap: 24 }}>
           <button
             onClick={() => setActiveTab("messages")}
