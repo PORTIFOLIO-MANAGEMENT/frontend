@@ -1,4 +1,17 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import api from "../services/api";
+
+// Stable per-browser id so anonymous visitors can resume their ARIA thread.
+// Signed-in users are matched server-side by their token instead.
+const SESSION_KEY = "pm_aria_session";
+function getSessionId() {
+  let id = localStorage.getItem(SESSION_KEY);
+  if (!id) {
+    id = crypto.randomUUID?.() ?? `s-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    localStorage.setItem(SESSION_KEY, id);
+  }
+  return id;
+}
 
 export default function AIWidget({ onClose }) {
   const [activeTab, setActiveTab] = useState("ask");
@@ -9,6 +22,7 @@ export default function AIWidget({ onClose }) {
   const [loading, setLoading] = useState(false);
   const [dots, setDots]     = useState("");
   const endRef = useRef(null);
+  const conversationId = useRef(null);
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, loading]);
 
@@ -25,30 +39,25 @@ export default function AIWidget({ onClose }) {
     setMessages(m => [...m, { role: "user", text }]);
     setLoading(true);
     try {
-      const history = [...messages, { role: "user", text }];
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
-          system: `You are ARIA, the AI assistant for FORGE STUDIO — a two-person creative studio.
-One partner is a full-stack developer (React, TypeScript, Python, Laravel).
-The other is a 3D/graphic designer (Blender, motion design, branding).
-Services: Interactive web apps, 3D & motion design, brand identity, creative direction.
-Be sharp, direct, creative. Never generic. Max 3 sentences per response unless writing a brief.
-If asked for a project brief, ask: 1) What's the project? 2) What's the timeline? 3) What's the budget?`,
-          messages: history.map(m => ({ role: m.role, content: m.text })),
-        }),
+      // Proxied through our Laravel API — the Anthropic key never ships to the browser.
+      const { data } = await api.post("/ai/chat", {
+        message: text,
+        session_id: getSessionId(),
+        conversation_id: conversationId.current,
       });
-      const data  = await res.json();
-      const reply = data.content?.map(c => c.text || "").join("") || "Something broke. Refresh and try again.";
+      conversationId.current = data.conversation_id;
+      setMessages(m => [...m, { role: "assistant", text: data.reply || "Something broke. Try again." }]);
+    } catch (err) {
+      const status = err?.response?.status;
+      const reply = status === 503
+        ? "ARIA is offline right now. Reach the studio via the Book page."
+        : status === 429
+          ? "Easy there — too many messages. Give it a few seconds."
+          : err?.response?.data?.message || "Connection dropped. Try again.";
       setMessages(m => [...m, { role: "assistant", text: reply }]);
-    } catch {
-      setMessages(m => [...m, { role: "assistant", text: "Connection dropped. Try again." }]);
     }
     setLoading(false);
-  }, [input, loading, messages]);
+  }, [input, loading]);
 
   return (
     <div className="ai-widget" style={{

@@ -2,10 +2,28 @@ import { FONTS } from "../data";
 
 export const globalCss = `
   ${FONTS}
+  /* ── Theme tokens ── */
+  /* Structural palette as CSS variables so the whole site re-themes by flipping
+     <html data-theme>. Dark is the default (:root); light is the override.
+     Brand hues (lime/pink/purple) live in theme.js as static hex. */
+  :root {
+    --bg:#080808; --surface:#0D0D0D; --surface-alt:#0a0a0a;
+    --border:#1e1e1e; --border-soft:#1a1a1a;
+    --text:#ffffff; --text-muted:#888888; --text-faint:#555555; --text-dim:#444444;
+    --accent-text:#C8F53B; /* lime reads fine on dark surfaces */
+    --scrollbar-track:#0a0a0a;
+  }
+  [data-theme="light"] {
+    --bg:#f4f4f1; --surface:#ffffff; --surface-alt:#ececea;
+    --border:#e3e3df; --border-soft:#ededea;
+    --text:#0a0a0a; --text-muted:#5a5a5a; --text-faint:#7a7a78; --text-dim:#9a9a98;
+    --accent-text:#3c7a00; /* dark lime-green — readable on light surfaces */
+    --scrollbar-track:#e8e8e4;
+  }
   html { scroll-behavior: smooth; }
-  body { background: #080808; color: #fff; cursor: none; }
+  body { background: var(--bg); color: var(--text); transition: background 0.3s ease, color 0.3s ease; }
   ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: #0a0a0a; }
+  ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
   ::-webkit-scrollbar-thumb { background: #C8F53B; border-radius: 2px; }
   @keyframes fadeSlide { from { opacity:0; transform:translateY(40px); } to { opacity:1; transform:translateY(0); } }
   @keyframes slideUp   { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
@@ -18,6 +36,20 @@ export const globalCss = `
   @keyframes slideDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
   .glitch-text:hover { animation: glitch 0.4s steps(2) infinite; }
   input, textarea, select { font-family: 'Space Mono', monospace; }
+  /* ── Accessibility ── */
+  /* Clear keyboard focus ring (the native cursor is used for pointer users). */
+  :focus-visible { outline: 2px solid #C8F53B; outline-offset: 2px; border-radius: 2px; }
+  /* ── Scroll reveal ── */
+  /* Toggled by the useReveal IntersectionObserver hook; reduced-motion below
+     neutralizes the transition so content simply appears. */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1); }
+  .reveal.in { opacity: 1; transform: none; }
+  /* Honour reduced-motion: kill the decorative loops/transitions. */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
   /* ── Nav ── */
   .rsp-nav { padding:20px 48px; }
   .nav-links { display:flex; gap:40px; }
@@ -56,6 +88,25 @@ export const globalCss = `
   /* ── Grids ── */
   .services-grid { display:grid; grid-template-columns:1fr 1fr; gap:2px; }
   .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; max-width:1400px; margin:0 auto; }
+  /* ── WHO WE ARE — editorial alternating team rows ── */
+  .team-rows { display:flex; flex-direction:column; gap:clamp(72px,11vw,150px); }
+  .team-row { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(32px,6vw,96px); align-items:center; }
+  .team-row.reverse .team-figure { order:2; }
+  .team-row.reverse .team-copy { order:1; }
+  .team-figure { position:relative; }
+  .team-figure-inner { position:relative; width:100%; height:clamp(420px,52vh,600px); border-radius:6px; overflow:hidden; background:linear-gradient(135deg,var(--surface-alt),#C8F53B22); clip-path:inset(0 100% 0 0); transition:clip-path 1s cubic-bezier(0.16,1,0.3,1) 0.12s; }
+  .team-row.reverse .team-figure-inner { clip-path:inset(0 0 0 100%); }
+  .team-row.in .team-figure-inner { clip-path:inset(0 0 0 0); }
+  .team-figure-inner img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.9s cubic-bezier(0.16,1,0.3,1); }
+  .team-figure:hover .team-figure-inner img { transform:scale(1.05); }
+  .team-figure-monogram { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'Bebas Neue',sans-serif; font-size:clamp(90px,15vw,200px); color:#C8F53B33; letter-spacing:4px; }
+  .team-figure::after { content:''; position:absolute; inset:0; border:1px solid #C8F53B55; border-radius:6px; transform:translate(16px,16px); transition:transform 0.5s ease; pointer-events:none; z-index:-1; }
+  .team-row.reverse .team-figure::after { transform:translate(-16px,16px); }
+  .team-figure:hover::after { transform:translate(9px,9px); }
+  .team-index { position:absolute; top:clamp(-90px,-7vw,-44px); left:-8px; font-family:'Bebas Neue',sans-serif; font-size:clamp(64px,9vw,128px); line-height:1; color:var(--text); opacity:0.07; z-index:0; pointer-events:none; }
+  .team-row.reverse .team-index { right:-8px; left:auto; }
+  .team-underline { height:2px; width:0; background:#C8F53B; margin:16px 0 24px; transition:width 0.8s cubic-bezier(0.16,1,0.3,1) 0.25s; }
+  .team-row.in .team-underline { width:84px; }
   /* ── Hero CTA row ── */
   .hero-cta-row { position:absolute; bottom:40px; left:50%; transform:translateX(-50%); display:flex; gap:12px; justify-content:center; z-index:3; animation:fadeSlide 1s 0.4s both; }
   /* ── Hero mobile identity ── */
@@ -63,7 +114,7 @@ export const globalCss = `
   /* ── Work grid ── */
   .work-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:24px; }
   /* ── Site footer ── */
-  .site-footer { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:24px; padding:48px; border-top:1px solid #111; background:#050505; }
+  .site-footer { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:24px; padding:48px; border-top:1px solid var(--border-soft); background:var(--surface-alt); }
   /* ── 1024px ── */
   @media (max-width:1024px) {
     .rsp-nav { padding:16px 32px; }
@@ -84,6 +135,12 @@ export const globalCss = `
     .hero-cta-row { position:relative; bottom:auto; left:50%; transform:translateX(-50%); flex-direction:row; align-items:center; width:calc(100% - 32px); max-width:400px; margin-top:16px; gap:8px; }
     .hero-cta-row button { flex:1; box-sizing:border-box; text-align:center; justify-content:center; padding: 12px 14px !important; }
     .work-grid { grid-template-columns:1fr; }
+    /* Stack team rows: image always on top, no alternation, full reveal. */
+    .team-row, .team-row.reverse { grid-template-columns:1fr; gap:24px; }
+    .team-row.reverse .team-figure, .team-row.reverse .team-copy { order:0; }
+    .team-figure-inner { height:clamp(320px,62vw,440px); clip-path:none !important; }
+    .team-figure::after { display:none; }
+    .team-index { top:-44px; }
     .site-footer { flex-direction:column; align-items:flex-start; padding:36px 20px; }
     .ai-widget { width:calc(100vw - 32px) !important; max-height:calc(100dvh - 120px) !important; bottom:16 !important; right:16 !important; left:16 !important; }
     .ai-widget-header { padding:14px 16px !important; }

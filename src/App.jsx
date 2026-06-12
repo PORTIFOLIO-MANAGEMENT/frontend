@@ -1,44 +1,59 @@
-import { useState } from "react";
+import { Routes, Route } from "react-router-dom";
 import { globalCss } from "./styles/globalCss";
-import CursorDot from "./components/CursorDot";
-import AIWidget from "./components/AIWidget";
-import Navbar from "./layout/Navbar";
-import Footer from "./layout/Footer";
-import HeroSection from "./pages/home/HeroSection";
-import MarqueeBar from "./components/MarqueeBar";
-import WorkSection from "./pages/home/WorkSection";
-import ServicesSection from "./pages/home/ServicesSection";
-import AboutSection from "./pages/home/AboutSection";
-import ContactSection from "./pages/home/ContactSection";
+import Layout from "./layout/Layout";
+import HomePage from "./pages/home/HomePage";
+import WorkPage from "./pages/work/WorkPage";
+import ProjectDetailPage from "./pages/work/ProjectDetailPage";
+import ServicesPage from "./pages/services/ServicesPage";
+import BookPage from "./pages/book/BookPage";
+import LoginPage from "./pages/auth/LoginPage";
+import RegisterPage from "./pages/auth/RegisterPage";
+import DashboardPage from "./pages/dashboard/DashboardPage";
+import StudioPage from "./pages/studio/StudioPage";
+import NotFoundPage from "./pages/NotFoundPage";
+import RequireAuth from "./components/RequireAuth";
+import { AnalyticsProvider } from "./context/AnalyticsContext";
 
 export default function App() {
-  const [aiOpen, setAiOpen] = useState(false);
-
   return (
-    <>
+    <AnalyticsProvider>
       <style>{globalCss}</style>
-      <CursorDot />
-      <Navbar setAiOpen={setAiOpen} />
-      <HeroSection />
-      <MarqueeBar />
-      <WorkSection />
-      <ServicesSection />
-      <AboutSection />
-      <ContactSection />
-      <Footer />
-      {aiOpen && <AIWidget onClose={() => setAiOpen(false)} />}
-      {!aiOpen && (
-        <button data-hover onClick={() => setAiOpen(true)} style={{
-          position: "fixed", bottom: 24, right: 24, zIndex: 999,
-          width: 60, height: 60, borderRadius: "50%",
-          background: "linear-gradient(135deg,#C8F53B,#7B61FF)",
-          border: "none", cursor: "pointer",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 22, fontWeight: 700, color: "#000",
-          boxShadow: "0 8px 32px rgba(200,245,59,0.3)",
-          animation: "pulse 3s infinite",
-        }}>A</button>
-      )}
-    </>
+      <Routes>
+        {/* Public marketing + showcase routes share the Layout chrome */}
+        <Route element={<Layout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/work" element={<WorkPage />} />
+          <Route path="/work/:slug" element={<ProjectDetailPage />} />
+          <Route path="/services" element={<ServicesPage />} />
+          <Route path="/book" element={<BookPage />} />
+        </Route>
+
+        {/* Auth screens (no marketing chrome) */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+
+        {/* Authenticated client dashboard */}
+        <Route
+          path="/dashboard"
+          element={
+            <RequireAuth>
+              <DashboardPage />
+            </RequireAuth>
+          }
+        />
+
+        {/* Studio admin (the two partners) */}
+        <Route
+          path="/studio/*"
+          element={
+            <RequireAuth requireAdmin>
+              <StudioPage />
+            </RequireAuth>
+          }
+        />
+
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </AnalyticsProvider>
   );
 }

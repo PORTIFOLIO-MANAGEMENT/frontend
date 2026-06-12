@@ -2,14 +2,33 @@ import { useEffect, useRef } from "react";
 import videoSrc from "../../assets/video/video-sample.mp4";
 import { noiseUrl } from "../../data";
 import Counter from "../../components/Counter";
+import { listProjects } from "../../services/projects";
+import { useAsync } from "../../hooks/useAsync";
+import { useTheme } from "../../context/ThemeContext";
+
+// Studio founding year — drives the honest "experience" stat instead of a
+// hardcoded number.
+const FOUNDED_YEAR = 2021;
 
 export default function HeroSection() {
   const canvasRef = useRef(null);
+  const { theme } = useTheme();
+
+  // Live project count for the hero stat (paginated meta.total).
+  const { data: projectCount } = useAsync(
+    () => listProjects().then((r) => r.meta?.total ?? r.data?.length ?? 0),
+    []
+  );
+
+  const yearsActive = Math.max(1, new Date().getFullYear() - FOUNDED_YEAR);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
+    // Particles stay visible over the (still dark) video overlay in both themes;
+    // light mode shifts them to the purple brand hue for a touch of variation.
+    const rgb = theme === "light" ? "123,97,255" : "200,245,59";
     let raf;
     const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
     resize();
@@ -26,20 +45,32 @@ export default function HeroSection() {
         if (p.x < 0) p.x = canvas.width;  if (p.x > canvas.width)  p.x = 0;
         if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
         ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(200,245,59,${p.opacity})`; ctx.fill();
+        ctx.fillStyle = `rgba(${rgb},${p.opacity})`; ctx.fill();
       });
       particles.forEach((p, i) => particles.slice(i + 1).forEach(q => {
         const d = Math.hypot(p.x - q.x, p.y - q.y);
         if (d < 120) {
           ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
-          ctx.strokeStyle = `rgba(200,245,59,${(1 - d / 120) * 0.1})`; ctx.lineWidth = 0.5; ctx.stroke();
+          ctx.strokeStyle = `rgba(${rgb},${(1 - d / 120) * 0.1})`; ctx.lineWidth = 0.5; ctx.stroke();
         }
       }));
       raf = requestAnimationFrame(draw);
     };
     draw();
     return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", resize); };
-  }, []);
+  }, [theme]);
+
+  // The hero sits over video, so it stays cinematic-dark in both themes; the
+  // overlay lightens slightly in light mode while keeping white text readable.
+  const overlay = theme === "light"
+    ? "linear-gradient(160deg, rgba(8,8,8,0.5) 0%, rgba(8,8,8,0.32) 50%, rgba(8,8,8,0.62) 100%)"
+    : "linear-gradient(160deg, rgba(8,8,8,0.62) 0%, rgba(8,8,8,0.38) 50%, rgba(8,8,8,0.72) 100%)";
+
+  const stats = [
+    { target: projectCount ?? 0, suffix: "+", label: "PROJECTS" },
+    { target: yearsActive, suffix: "yr", label: "EXPERIENCE" },
+    { target: 100, suffix: "%", label: "REMOTE-FIRST" },
+  ];
 
   return (
     <section id="home" style={{ position: "relative", minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", overflow: "hidden", padding: "clamp(80px,12vw,140px) clamp(16px,5vw,80px) 80px" }}>
@@ -49,7 +80,7 @@ export default function HeroSection() {
         <source src={videoSrc} type="video/mp4" />
       </video>
       {/* Dark overlay */}
-      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg, rgba(8,8,8,0.62) 0%, rgba(8,8,8,0.38) 50%, rgba(8,8,8,0.72) 100%)", zIndex: -1 }} />
+      <div style={{ position: "absolute", inset: 0, background: overlay, zIndex: -1 }} />
       <canvas ref={canvasRef} style={{ position: "absolute", inset: 0, zIndex: 0 }} />
       <div style={{ position: "absolute", inset: 0, backgroundImage: noiseUrl, opacity: 0.03, zIndex: 1 }} />
 
@@ -72,8 +103,6 @@ export default function HeroSection() {
         </svg>
       </div>
 
-      {/* Mobile-only hero identity */}
-
       {/* CTA buttons — bottom of hero section */}
       <div className="hero-cta-row" style={{ position: "absolute", bottom: 40, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "center", zIndex: 3, animation: "fadeSlide 1s 0.4s both" }}>
         <button data-hover
@@ -95,15 +124,15 @@ export default function HeroSection() {
       {/* Scroll indicator */}
       <div className="hero-bottom" style={{ position: "absolute", bottom: 40, left: 48, alignItems: "center", gap: 12, zIndex: 2, animation: "fadeSlide 1s 0.5s both" }}>
         <div style={{ width: 1, height: 60, background: "linear-gradient(#C8F53B,transparent)", animation: "pulse 2s infinite" }} />
-        <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, letterSpacing: 3, color: "#444" }}>SCROLL TO EXPLORE</span>
+        <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, letterSpacing: 3, color: "#888" }}>SCROLL TO EXPLORE</span>
       </div>
 
       {/* Hero stats */}
       <div className="hero-bottom" style={{ position: "absolute", bottom: 40, right: 48, gap: 40, zIndex: 2, animation: "fadeSlide 1s 0.6s both" }}>
-        {[{ target: 48, label: "PROJECTS" }, { target: 5, label: "YEARS" }, { target: 32, label: "CLIENTS" }].map(s => (
+        {stats.map(s => (
           <div key={s.label} style={{ textAlign: "right" }}>
-            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 36, color: "#fff", lineHeight: 1 }}><Counter target={s.target} suffix="+" /></div>
-            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 3, color: "#444" }}>{s.label}</div>
+            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 36, color: "#fff", lineHeight: 1 }}><Counter target={s.target} suffix={s.suffix} /></div>
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 3, color: "#888" }}>{s.label}</div>
           </div>
         ))}
       </div>
